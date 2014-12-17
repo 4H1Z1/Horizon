@@ -1,10 +1,12 @@
 package com.horizon.game.map;
 
+import com.horizon.game.level.tiles.Tile;
+
 public class Chunk {
 	public int[][] tiles;
 	public boolean isLoaded;
 	public float[][] tileFrequancy;
-	Chunk(int[][] tiles,float[][] tileFrequancy, boolean isLoaded) {
+	public Chunk(int[][] tiles,float[][] tileFrequancy, boolean isLoaded) {
 		this.tiles = tiles;
 		this.isLoaded = isLoaded;
 		this.tileFrequancy = tileFrequancy;
@@ -21,6 +23,18 @@ public class Chunk {
 			return 0;
 		}
 		return tiles[x][y];
+	}
+	public Tile getTile(int x, int y) {
+		if(x<0||y<0){
+			return null;
+		}
+		return Tile.getTileByID(tiles[x][y]);
+	}
+	public void setTile(int x, int y, int id) {
+		if(x<0||y<0){
+			return;
+		}
+		tiles[x][y] = id;
 	}
 	public float getTileFrequancy(int x, int y) {
 		return tileFrequancy[x][y];

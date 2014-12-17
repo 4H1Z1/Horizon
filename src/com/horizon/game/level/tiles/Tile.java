@@ -15,6 +15,7 @@ public abstract class Tile {
 	public static final Tile DEEP_WATER = new BasicTile(4, 3, 0, false, true, false, "Deep Water", 0xff3D40FF);
 	public static final Tile OAK_LOG = new BasicTile(5, 4, 0, true, false, false, "Oak Log", 0xffC4A637);
 	public static final Tile OAK_LEAVES = new BasicTile(6, 5, 0, true, false, false, "Oak Leaves", 0xff00C690);
+	public static final Tile SAND = new BasicTile(7, 6, 0, true, false, false, "Sand", 0xffF3F781);
 
 	protected byte id;
 	protected boolean isSolid;

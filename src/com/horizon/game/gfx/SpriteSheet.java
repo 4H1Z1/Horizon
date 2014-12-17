@@ -27,8 +27,5 @@ public class SpriteSheet {
 		this.width = image.getWidth();
 
 		pixles = image.getRGB(0, 0, width, height, null, 0, width);
-		/*for (int i = 0; i < pixles.length; i++) {
-			pixles[i] = (pixles[i] & 0xff) / 64;
-		}*/
 	}
 }

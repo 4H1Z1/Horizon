@@ -68,7 +68,9 @@ public class Screen {
 			}
 		}
 	}
-
+	private static int setAlpha(int c, int alpha) {
+		return (c & 0xFFFFFF) | (alpha << 24);
+	}
 	public void render(int xPos, int yPos, int tile) {
 		render(xPos, yPos, tile, 0x00);
 	}

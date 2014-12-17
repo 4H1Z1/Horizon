@@ -1,9 +1,10 @@
 package com.horizon.game.entitys;
 
+import java.awt.Rectangle;
+
 import com.horizon.game.CurrentScreen;
 import com.horizon.game.InputHandler;
 import com.horizon.game.horizon;
-import com.horizon.game.gfx.Colours;
 import com.horizon.game.gfx.Screen;
 import com.horizon.game.level.Level;
 import com.horizon.game.level.tiles.Tile;
@@ -15,18 +16,97 @@ public class Player extends Mob {
 	private int moveTick = 0;
 	private int moveTickCap = 15;
 	private int movePos = 0;
-	private int runningModifier = 8;
-	private Tile currentTile;
+	private int runningModifier = 3;
 	public Player(Level lever, int x, int y, InputHandler input,int gender) {
 		super(lever, "Player", x, y, 1,gender);
 		this.gender = gender;
 		//male = 0 female = 1
 		this.input = input;
-		this.currentTile = Tile.GRASS;
 	}
 
 	@Override
 	public boolean hasColided(int xa, int ya) {
+		//set to 8 wide so wont scrape sides going into doors
+		Rectangle playerBox = new Rectangle((x-10)+xa, (y-12)+ya, 20, 32);
+		//System.out.println(playerBox.x+" "+(playerBox.x+playerBox.width));
+		if(xa>0){
+			//right
+			int posibleSolids = 2;
+			if(playerBox.y%16>2||playerBox.y%16<13){
+				posibleSolids=3;
+			}
+			for(int i=0;i<posibleSolids;i++){
+				int xTile = (playerBox.x/16);
+				int yTile = (playerBox.y/16)+i;
+				if(x<0){
+					xTile=xTile-1;
+				}
+				if(y<0){
+					yTile=yTile-1;
+				}
+				if(level.map.getTile(xTile+2, yTile, 2)!=null&&level.map.getTile(xTile+2, yTile	, 2)!=Tile.VOID){
+					return true;
+				}
+			}
+		}else if(xa<0){
+			//left
+			int posibleSolids = 2;
+			if(playerBox.y%16>2||playerBox.y%16<13){
+				posibleSolids=3;
+			}
+			for(int i=0;i<posibleSolids;i++){
+				int xTile = (playerBox.x/16);
+				int yTile = (playerBox.y/16)+i;
+				if(x<0){
+					xTile=xTile-1;
+				}
+				if(y<0){
+					yTile=yTile-1;
+				}
+				if(level.map.getTile(xTile, yTile, 2)!=null&&level.map.getTile(xTile, yTile	, 2)!=Tile.VOID){
+					return true;
+				}
+			}
+		}else if(ya>0){
+			//down
+			int posibleSolids = 2;
+			if(playerBox.x%16>2||playerBox.x%16<13){
+				posibleSolids=3;
+			}
+			for(int i=0;i<posibleSolids;i++){
+				int xTile = (playerBox.x/16)+i;
+				int yTile = playerBox.y/16;
+				if(x<0){
+					xTile=xTile-1;
+				}
+				if(y<0){
+					yTile=yTile-1;
+				}
+				if(level.map.getTile(xTile, yTile+2, 2)!=null&&level.map.getTile(xTile, yTile+2	, 2)!=Tile.VOID){
+					return true;
+				}
+			}
+		}else if(ya<0){
+			//up
+			int posibleSolids = 2;
+			if(playerBox.x%16>2||playerBox.x%16<13){
+				posibleSolids=3;
+			}
+			for(int i=0;i<posibleSolids;i++){
+				int xTile = (playerBox.x/16)+i;
+				int yTile = playerBox.y/16;
+				if(x<0){
+					xTile=xTile-1;
+				}
+				if(y<0){
+					yTile=yTile-1;
+				}
+				if(level.map.getTile(xTile, yTile, 2)!=null&&level.map.getTile(xTile, yTile, 2)!=Tile.VOID){
+					return true;
+				}
+			}
+		}
+		//System.out.println(xTile+" "+yTile+" "+xRemander+" "+yRemander);
 		return false;
 	}
 
@@ -37,43 +117,90 @@ public class Player extends Mob {
 		moveTick++;
 		if (horizon.currentScreen == CurrentScreen.GAME) {
 			if (input.up.isPressed()) {
-				if(input.shift.isPressed()){
-					ya-=runningModifier;
-					moveTickCap = 7;
-				}else{
-					ya--;
-					moveTickCap = 7*runningModifier;
+				if(!hasColided(0,-1)){
+					if(input.shift.isPressed()){
+						if(isSwimming){
+							ya-=(runningModifier/2);
+							moveTickCap = 7;
+						}else{
+							ya-=runningModifier;
+							moveTickCap = 7;	
+						}
+					}else{
+						if(isSwimming){
+							ya--;
+							moveTickCap = 7*runningModifier;
+						}else{
+							ya--;
+							moveTickCap = 7*runningModifier;	
+						}
+					}
 				}
 				direction = 3;
 			}
 			if (input.down.isPressed()) {
-				if(input.shift.isPressed()){
-					ya+=runningModifier;
-					moveTickCap = 7;
-				}else{
-					ya++;
-					moveTickCap = 7*runningModifier;
+				if(!hasColided(0,1)){
+					if(input.shift.isPressed()){
+						if(isSwimming){
+							ya+=(runningModifier/2);
+							moveTickCap = 7;
+						}else{
+							ya+=runningModifier;
+							moveTickCap = 7;	
+						}
+					}else{
+						if(isSwimming){
+							ya++;
+							moveTickCap = 7*runningModifier;
+						}else{
+							ya++;
+							moveTickCap = 7*runningModifier;
+						}
+					}
 				}
 				direction = 0;
 			}
 			if (input.left.isPressed()) {
-				if(input.shift.isPressed()){
-					xa-=runningModifier;
-					moveTickCap = 7;
-				}else{
-					xa--;
-					moveTickCap = 7*runningModifier;
+				if(!hasColided(-1,0)){
+					if(input.shift.isPressed()){
+						if(isSwimming){
+							xa-=(runningModifier/2);
+							moveTickCap = 7;
+						}else{
+							xa-=runningModifier;
+							moveTickCap = 7;
+						}
+					}else{
+						if(isSwimming){
+							xa--;
+							moveTickCap = 7*runningModifier;
+						}else{
+							xa--;
+							moveTickCap = 7*runningModifier;
+						}
+					}
 				}
-				
 				direction = 1;
 			}
 			if (input.right.isPressed()) {
-				if(input.shift.isPressed()){
-					xa+=runningModifier;
-					moveTickCap = 7;
-				}else{
-					xa++;
-					moveTickCap = 7*runningModifier;
+				if(!hasColided(1,0)){
+					if(input.shift.isPressed()){
+						if(isSwimming){
+							xa+=(runningModifier/2);
+							moveTickCap = 7;
+						}else{
+							xa+=runningModifier;
+							moveTickCap = 7;
+						}
+					}else{
+						if(isSwimming){
+							xa++;
+							moveTickCap = 7*runningModifier;
+						}else{
+							xa++;
+							moveTickCap = 7*runningModifier;
+						}
+					}
 				}
 				direction = 2;
 			}
@@ -105,13 +232,15 @@ public class Player extends Mob {
 		if(gender==0){
 			if(isMoving){
 				if(isSwimming){
-					if(movePos==1){
-						screen.render(xOffset, yOffset+(modifier/2), xTile + (yTile+(direction*2)) * 20);
-						screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 1) + (yTile+(direction*2)) * 20);
-					}else{
-						screen.render(xOffset, yOffset+(modifier/2), (xTile+4) + (yTile+(direction*2)) * 20);
-						screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 5) + (yTile+(direction*2)) * 20);
-					}
+					//if(currentTile!=Tile.DEEP_WATER){
+						if(movePos==1){
+							screen.render(xOffset, yOffset+(modifier/2), xTile + (yTile+(direction*2)) * 20);
+							screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 1) + (yTile+(direction*2)) * 20);
+						}else{
+							screen.render(xOffset, yOffset+(modifier/2), (xTile+4) + (yTile+(direction*2)) * 20);
+							screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 5) + (yTile+(direction*2)) * 20);
+						}
+					//}
 				}else{
 					if(movePos==1){
 						screen.render(xOffset, yOffset, xTile + (yTile+(direction*2)) * 20);
@@ -127,8 +256,10 @@ public class Player extends Mob {
 				}
 			}else{
 				if(isSwimming){
-					screen.render(xOffset, yOffset+(modifier/2), (xTile+2) + (yTile+(direction*2)) * 20);
-					screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 3) + (yTile+(direction*2)) * 20);
+					//if(currentTile!=Tile.DEEP_WATER){
+						screen.render(xOffset, yOffset+(modifier/2), (xTile+2) + (yTile+(direction*2)) * 20);
+						screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 3) + (yTile+(direction*2)) * 20);
+					//}
 				}else{
 					screen.render(xOffset, yOffset, (xTile+2) + (yTile+(direction*2)) * 20);
 					screen.render(xOffset + modifier, yOffset, (xTile + 3) + (yTile+(direction*2)) * 20);
@@ -139,13 +270,15 @@ public class Player extends Mob {
 		}else{
 			if(isMoving){
 				if(isSwimming){
-					if(movePos==1){
-						screen.render(xOffset, yOffset+(modifier/2), (xTile+6) + (yTile+(direction*2)) * 20);
-						screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 7) + (yTile+(direction*2)) * 20);
-					}else{
-						screen.render(xOffset, yOffset+(modifier/2), (xTile+10) + (yTile+(direction*2)) * 20);
-						screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 11) + (yTile+(direction*2)) * 20);
-					}
+					//if(currentTile!=Tile.DEEP_WATER){
+						if(movePos==1){
+							screen.render(xOffset, yOffset+(modifier/2), (xTile+6) + (yTile+(direction*2)) * 20);
+							screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 7) + (yTile+(direction*2)) * 20);
+						}else{
+							screen.render(xOffset, yOffset+(modifier/2), (xTile+10) + (yTile+(direction*2)) * 20);
+							screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 11) + (yTile+(direction*2)) * 20);
+						}
+					//}
 				}else{
 					if(movePos==1){
 						screen.render(xOffset, yOffset, (xTile+6) + (yTile+(direction*2)) * 20);
@@ -161,8 +294,10 @@ public class Player extends Mob {
 				}
 			}else{
 				if(isSwimming){
-					screen.render(xOffset, yOffset+(modifier/2), (xTile+8) + (yTile+(direction*2)) * 20);
-					screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 9) + (yTile+(direction*2)) * 20);
+					//if(currentTile!=Tile.DEEP_WATER){
+						screen.render(xOffset, yOffset+(modifier/2), (xTile+8) + (yTile+(direction*2)) * 20);
+						screen.render(xOffset + modifier, yOffset+(modifier/2), (xTile + 9) + (yTile+(direction*2)) * 20);
+					//}
 				}else{
 					screen.render(xOffset, yOffset, (xTile+8) + (yTile+(direction*2)) * 20);
 					screen.render(xOffset + modifier, yOffset, (xTile + 9) + (yTile+(direction*2)) * 20);

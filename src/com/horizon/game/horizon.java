@@ -1,5 +1,6 @@
 package com.horizon.game;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -7,6 +8,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
@@ -116,6 +118,7 @@ public class horizon extends Canvas implements Runnable {
 				fps = ticks;
 				frames = 0;
 				ticks = 0;
+				level.timeTick();
 			}
 		}
 		System.out.println("Exit");
@@ -125,16 +128,17 @@ public class horizon extends Canvas implements Runnable {
 		screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/spritesheet.png"));
 		input = new InputHandler(this);
 		level = new Level(this,400);
-		player = new Player(level, 0, 0, input,1);
+		player = new Player(level, 0, 0, input,0);
 		level.addEntity(player);
 		// will be changed to main menu at a later date
 		currentScreen = CurrentScreen.GAME;
-		Structures.oak_tree.generateStructure(-10, 0, level);
+		//Structures.oak_tree.generateStructure(-10, -10, level);
 	}
 
 	public void tick() {
 		tickCount++;
 		level.tick();
+		level.miniMap.updateMap(player.x, player.y);
 	}
 
 	public void render() {
@@ -146,9 +150,29 @@ public class horizon extends Canvas implements Runnable {
 		int xOffset = player.x - (screen.width / 2);
 		int yOffset = player.y - (screen.height / 2);
 		// rendering the world
-		level.renderTiles(screen, xOffset, yOffset,player);
+		
+		level.renderTiles(screen, xOffset, yOffset,player,1);
+		level.renderTiles(screen, xOffset, yOffset,player,2);
 		level.renderEntitys(screen);
-
+		level.renderTiles(screen, xOffset, yOffset,player,3);
+		
+		///start of eg tree
+		level.map.setTile(-2, 0, 6, 3);
+		
+		level.map.setTile(-1, 1, 6, 3);
+		level.map.setTile(-2, 1, 6, 3);
+		level.map.setTile(-3, 1, 6, 3);
+		
+		level.map.setTile(-1, 2, 6, 3);
+		level.map.setTile(-2, 2, 6, 3);
+		level.map.setTile(-3, 2, 6, 3);
+		
+		level.map.setTile(-2, 3, 5, 3);
+		
+		level.map.setTile(-2, 4, 5, 2);
+		//end of eg tree
+		
+		
 		for (int y = 0; y < screen.height; y++) {
 			for (int x = 0; x < screen.width; x++) {
 				int colourCode = screen.pixles[x + y * screen.width];
@@ -158,6 +182,21 @@ public class horizon extends Canvas implements Runnable {
 			}
 		}
 		Graphics g = bs.getDrawGraphics();
+		
+		/*//start of new ighting
+		Color daylight = new Color(64,224,208);
+        Color nightlight = new Color(0,0,0);
+		Graphics2D g2 = (Graphics2D)g;
+        g2.setPaint(nightlight);
+        g2.fillRect(0,0,getWidth(),getHeight());
+        g2.setComposite(
+                AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER,
+                    0.6F));
+        g2.setPaint(daylight);
+        g2.fillRect(0,0,getWidth(),getHeight());
+        //end of new lighting*/
+        
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -179,7 +218,7 @@ public class horizon extends Canvas implements Runnable {
 					+ ")", 10, 20);
 			g.drawString("PlayerLoc: (" + (player.x / 16) + ","
 					+ (player.y / 16) + ")", 10, 40);
-			g.drawString("CurrentBlock: (" + x + "," + y + ","+level.getTileType((int) x, (int) y)+","+level.map.getTileFrequancy((int)x, (int)y)+")", 10, 60);
+			g.drawString("CurrentBlock: (" + x + "," + y + ","+level.getTileType((int) x, (int) y)+","+level.map.getTileFrequancy((int)x, (int)y,1)+")", 10, 60);
 			int xChunk = (player.x/16)/16;
 			int yChunk =(player.y/16)/16;
 			if(player.y<0){
@@ -188,8 +227,9 @@ public class horizon extends Canvas implements Runnable {
 			if(player.x<0){
 				xChunk =((player.x/16)/16)+-1;
 			}
-			g.drawString("Current chunk X:"+xChunk+" y:"+yChunk, 10, 80);
+			g.drawString("Current chunk (X:"+xChunk+",Y:"+yChunk+") Loaded:"+level.map.loadedChunkCount, 10, 80);
 		}
+		g.drawRect((getWidth()/2)-16, (getHeight()/2)-36, 80, 96);
 		g.dispose();
 		bs.show();
 	}

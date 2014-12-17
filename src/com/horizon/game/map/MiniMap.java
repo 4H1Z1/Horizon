@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import com.horizon.game.level.Level;
-import com.horizon.game.level.tiles.Tile;
 
 public class MiniMap {
 	public int width;
@@ -24,23 +23,21 @@ public class MiniMap {
 	}
 
 	public void updateMap(int playerX, int playerY) {
-		/*int[] pixles = ((DataBufferInt) image.getRaster().getDataBuffer())
+		int[] pixles = ((DataBufferInt) image.getRaster().getDataBuffer())
 				.getData();
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				if (level.tiles.length<((playerX+x-(width/2))+(playerY+y-(height/2))*level.width)||
-						0 > ((x + (playerX - (width / 2))) + (y + (playerY - (height - 2))) * level.width)) {
-					pixles[x + y * width] = Tile.VOID.getBaseColour();
-				} else {
-					pixles[x + y * width] = Tile.getTileByID(
-							level.tiles[(x + (playerX - (width / 2)))
-									+ (y + (playerY - (height / 2)))
-									* level.width]).getBaseColour();
+				int xa = ((playerX/16)-(width/2))+x;
+				int ya = ((playerY/16)-(height/2))+y;
+				if(level.map.getChunk(xa,ya,false,4)!=null&&level.map.getChunk(xa,ya,false,4).isLoaded){
+					pixles[x+y*width] = level.getTile(xa,ya,4).getBaseColour();
+				}else{
+					pixles[x+y*width] = 0xff000000;
 				}
 				if(((width/2)-1==x&&height/2==y)||((width/2)==x&&height/2==y)||((width/2)+1==x&&height/2==y)||((height/2)-1==y&&width/2==x)||((height/2)+1==y)&&width/2==x){
-					pixles[x + y * width] = Tile.VOID.getBaseColour();
+					pixles[x + y * width] = 0xff000000;
 				}
 			}
-		}*/
+		}
 	}
 }

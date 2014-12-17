@@ -44,8 +44,10 @@ public abstract class Mob extends Entity{
 			x+=xa*speed;
 			y+=ya*speed;
 		}
-		if(level.map.getTile(x/16, y/16)!=null&&level.map.getTile(x/16, y/16)==Tile.WATER||level.map.getTile(x/16, y/16)!=null&&level.map.getTile(x/16, y/16)==Tile.DEEP_WATER){
-			currentTile = level.map.getTile(x, y);
+		if(level.map.getTile(x/16, y/16,1)!=null){
+			currentTile = level.map.getTile(x/16, y/16,1);
+		}
+		if(level.map.getTile(x/16, y/16,1)!=null&&level.map.getTile(x/16, y/16,1)==Tile.WATER||level.map.getTile(x/16, y/16,1)!=null&&level.map.getTile(x/16, y/16,1)==Tile.DEEP_WATER){
 			isSwimming=true;
 		}else{
 			isSwimming=false;
