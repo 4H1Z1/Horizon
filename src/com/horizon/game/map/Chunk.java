@@ -6,7 +6,8 @@ public class Chunk {
 	public int[][] tiles;
 	public boolean isLoaded;
 	public float[][] tileFrequancy;
-	public Chunk(int[][] tiles,float[][] tileFrequancy, boolean isLoaded) {
+	public Chunk(int[][] tiles,float[][] tileFrequancy,
+			 boolean isLoaded) {
 		this.tiles = tiles;
 		this.isLoaded = isLoaded;
 		this.tileFrequancy = tileFrequancy;

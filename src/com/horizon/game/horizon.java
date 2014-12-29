@@ -1,6 +1,5 @@
 package com.horizon.game;
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -8,13 +7,11 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.awt.image.RescaleOp;
 
 import javax.swing.JFrame;
 import javax.swing.event.MouseInputAdapter;
@@ -23,13 +20,13 @@ import com.horizon.game.entitys.Player;
 import com.horizon.game.gfx.Screen;
 import com.horizon.game.gfx.SpriteSheet;
 import com.horizon.game.gui.GUI;
+import com.horizon.game.inventory.Item;
 import com.horizon.game.level.Level;
-import com.horizon.game.structures.Structures;
 
 public class horizon extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private static String version = "V0.0.1_8";
+	private static String version = "V0.0.1_9";
 	static Point mouseCoords = new Point();
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = WIDTH / 12 * 9;
@@ -156,21 +153,6 @@ public class horizon extends Canvas implements Runnable {
 		level.renderEntitys(screen);
 		level.renderTiles(screen, xOffset, yOffset,player,3);
 		
-		///start of eg tree
-		level.map.setTile(-2, 0, 6, 3);
-		
-		level.map.setTile(-1, 1, 6, 3);
-		level.map.setTile(-2, 1, 6, 3);
-		level.map.setTile(-3, 1, 6, 3);
-		
-		level.map.setTile(-1, 2, 6, 3);
-		level.map.setTile(-2, 2, 6, 3);
-		level.map.setTile(-3, 2, 6, 3);
-		
-		level.map.setTile(-2, 3, 5, 3);
-		
-		level.map.setTile(-2, 4, 5, 2);
-		//end of eg tree
 		
 		
 		for (int y = 0; y < screen.height; y++) {
@@ -216,8 +198,8 @@ public class horizon extends Canvas implements Runnable {
 			// System.out.println(x);
 			g.drawString("Horizon Game ("+version+") (FPS:" + fps + " TPS:" + tps
 					+ ")", 10, 20);
-			g.drawString("PlayerLoc: (" + (player.x / 16) + ","
-					+ (player.y / 16) + ")", 10, 40);
+			g.drawString("Player: (" + (player.x / 16) + ","
+					+ (player.y / 16) + ") (Health:"+player.getHealth()+") ", 10, 40);
 			g.drawString("CurrentBlock: (" + x + "," + y + ","+level.getTileType((int) x, (int) y)+","+level.map.getTileFrequancy((int)x, (int)y,1)+")", 10, 60);
 			int xChunk = (player.x/16)/16;
 			int yChunk =(player.y/16)/16;

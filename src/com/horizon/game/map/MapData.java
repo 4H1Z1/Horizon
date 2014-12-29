@@ -4,8 +4,6 @@ import java.util.Random;
 
 import com.horizon.game.level.Level;
 import com.horizon.game.level.tiles.Tile;
-import com.horizon.game.structures.Building;
-import com.horizon.game.structures.Plant;
 import com.horizon.game.structures.Structures;
 
 
@@ -59,7 +57,6 @@ public class MapData {
 		//lower left
 	Chunk[][] Structure_chunkLL;
 	public int loadedChunkCount;
-	private Level level;
 	public MapData(int seed,Level level) {
 		this.seed = seed;
 		this.FirstLayer_chunksUR = new Chunk[1000][1000];
@@ -81,7 +78,6 @@ public class MapData {
 		this.StichedMap_chunksUL = new Chunk[1000][1000];
 		this.StichedMap_chunksLR = new Chunk[1000][1000];
 		this.StichedMap_chunksLL = new Chunk[1000][1000];
-		this.level = level;
 		
 		this.Structure_chunkLR = new Chunk[1000][1000];
 		this.Structure_chunkLL = new Chunk[1000][1000];
@@ -92,13 +88,17 @@ public class MapData {
 	public void generateChunk(int x, int y, boolean shouldLoad) {
 		/*
 		 old values
-		 float scale = 0.003F;
-		float roughness = 0.4F;
-		int octaves = 5;
-		 */
 		float scale = 0.002F;
 		float roughness = 0.60F;
 		int octaves = 5;
+		 */
+		float scale = 0.0006F;
+		float roughness = 0.70F;
+		int octaves = 5;
+		float biome_scale = 0.002F;
+		float biome_roughness = 0.80F;
+		int biome_octaves = 5;
+		int seed = 12232;
 		int xb = x;
 		int yb = y;
 		if(xb<0){
@@ -114,12 +114,13 @@ public class MapData {
 		loadedChunkCount++;
 		if(x>=0&&y>=0){
 			float[][] newTiles = NoiseGenerator.generateOctavedSimplexNoise(16, 16,
-					xb*16, yb*16, octaves, roughness, scale);
-			int[][] tarrain = generateTarrain(newTiles);
+					xb*16, yb*16, octaves, roughness, scale,seed);
+			int[][] tarrain = generateTarrain(newTiles,NoiseGenerator.generateOctavedSimplexNoise(16, 16,
+					xb*16, yb*16, biome_octaves, biome_roughness, biome_scale,seed));
 			FirstLayer_chunksLR[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
 			StichedMap_chunksLR[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
-			for(int xc = 0;xc<14;xc++){
-				for(int yc = 0;yc<15;yc++){
+			for(int xc = 0;xc<13;xc++){
+				for(int yc = 0;yc<13;yc++){
 					if(new Random().nextInt(20)==1){
 						generateStructure((xb*16)+xc, (yb*16)+yc, Structures.oak_tree);
 					}
@@ -128,12 +129,13 @@ public class MapData {
 		}else if(x>=0&&y<0){
 			//useing *-1 to make it into a positive not to make a out of bounds exeption
 			float[][] newTiles = NoiseGenerator.generateOctavedSimplexNoise(16, 16,
-					xb*16, yb*-16, octaves, roughness, scale);
-			int[][] tarrain = generateTarrain(newTiles);
+					xb*16, yb*-16, octaves, roughness, scale,seed);
+			int[][] tarrain = generateTarrain(newTiles,NoiseGenerator.generateOctavedSimplexNoise(16, 16,
+					xb*16, yb*-16, biome_octaves, biome_roughness, biome_scale,seed));
 			FirstLayer_chunksUR[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
 			StichedMap_chunksUR[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
-			for(int xc = 0;xc<14;xc++){
-				for(int yc = 0;yc<15;yc++){
+			for(int xc = 0;xc<13;xc++){
+				for(int yc = 0;yc<13;yc++){
 					if(new Random().nextInt(20)==1){
 						generateStructure((xb*16)+xc, (yb*-16)+yc, Structures.oak_tree);
 					}
@@ -141,8 +143,9 @@ public class MapData {
 			}
 		}else if(x<0&y<0){
 			float[][] newTiles = NoiseGenerator.generateOctavedSimplexNoise(16, 16,
-					xb*-16, yb*-16, octaves, roughness, scale);
-			int[][] tarrain = generateTarrain(newTiles);
+					xb*-16, yb*-16, octaves, roughness, scale,seed);
+			int[][] tarrain = generateTarrain(newTiles,NoiseGenerator.generateOctavedSimplexNoise(16, 16,
+					xb*-16, yb*-16, biome_octaves, biome_roughness, biome_scale,seed));
 			FirstLayer_chunksUL[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
 			StichedMap_chunksUL[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
 			for(int xc = 0;xc<13;xc++){
@@ -154,12 +157,13 @@ public class MapData {
 			}
 		}else{
 			float[][] newTiles = NoiseGenerator.generateOctavedSimplexNoise(16, 16,
-					xb*-16, yb*16, octaves, roughness, scale);
-			int[][] tarrain = generateTarrain(newTiles);
+					xb*-16, yb*16, octaves, roughness, scale,seed);
+			int[][] tarrain = generateTarrain(newTiles,NoiseGenerator.generateOctavedSimplexNoise(16, 16,
+					xb*-16, yb*16, biome_octaves, biome_roughness, biome_scale,seed));
 			FirstLayer_chunksLL[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
 			StichedMap_chunksLL[xb][yb] = new Chunk(tarrain,newTiles, shouldLoad);
-			for(int xc = 0;xc<14;xc++){
-				for(int yc = 0;yc<15;yc++){
+			for(int xc = 0;xc<13;xc++){
+				for(int yc = 0;yc<13;yc++){
 					if(new Random().nextInt(20)==1){
 						generateStructure((xb*-16)+xc, (yb*16)+yc, Structures.oak_tree);
 					}
@@ -455,89 +459,121 @@ public class MapData {
 	}
 	
 	public void unloadChunk(int x, int y,int vue) {
-		switch(vue){
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
+		Chunk chunk = getChunk(x, y,true,vue);
+		if(chunk==null){
+			return;
 		}
-		if(x>=0&&y>=0){
-			// + + Lower right
-			if(FirstLayer_chunksLR[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksLR[x/16][y/16].Unload();
-		}else if(x>=0&&y<0){
-			//+ - upper right
-			if(FirstLayer_chunksUR[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksUR[x/16][y/16].Unload();
-		}else if(x<0&y<0){
-			//- - upper left
-			if(FirstLayer_chunksUL[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksUL[x/16][y/16].Unload();
-		}else{
-			//- + lower left
-			if(FirstLayer_chunksLL[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksLL[x/16][y/16].Unload();
-		}
+		chunk.Unload();
 	}
 	
 	public void loadChunk(int x, int y,int vue) {
-		switch(vue){
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
+		Chunk chunk = getChunk(x, y,true,vue);
+		if(chunk==null){
+			return;
 		}
-		if(x>=0&&y>=0){
-			// + + Lower right
-			if(FirstLayer_chunksLR[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksLR[x/16][y/16].Load();
-		}else if(x>=0&&y<0){
-			//+ - upper right
-			if(FirstLayer_chunksUR[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksUR[x/16][y/16].Load();
-		}else if(x<0&y<0){
-			//- - upper left
-			if(FirstLayer_chunksUL[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksUL[x/16][y/16].Load();
-		}else{
-			//- + lower left
-			if(FirstLayer_chunksLL[x/16][y/16]==null){
-				return;
-			}
-			FirstLayer_chunksLL[x/16][y/16].Load();
-		}
+		chunk.Load();
 	}
 
 	
 	
-	private int[][] generateTarrain(float[][] frequancy){
+	private int[][] generateTarrain(float[][] frequancy, float[][] fs){
 		int[][] newTileIDs = new int[frequancy.length][frequancy[0].length];
 		int width = frequancy.length;
 		int height = frequancy[0].length;
 		for(int x = 0;x< width; x++){
 			for(int y = 0;y< height; y++){
+				
+				if(frequancy[x][y]<0.00F){
+					if(frequancy[x][y]<-0.35F){
+						newTileIDs[x][y] = Tile.DEEP_WATER.getID();
+					}else{
+						newTileIDs[x][y] = Tile.WATER.getID();
+					}
+					
+				}else{
+					if(frequancy[x][y]<0.4F){
+						if(fs[x][y]<-0.15F){
+							//very cold
+							//desert
+							newTileIDs[x][y] = Tile.SAND.getID();
+						}else if(fs[x][y]<0F){
+							//cold
+							//sesert
+							newTileIDs[x][y] = Tile.SAND.getID();
+						}else if(fs[x][y]<0.2){
+							//mild
+							//sesert
+							newTileIDs[x][y] = Tile.SAND.getID();
+						}else if(fs[x][y]<0.4){
+							//warm
+							//desert
+							newTileIDs[x][y] = Tile.SAND.getID();
+						}else{
+							//hot
+							//desert
+							newTileIDs[x][y] = Tile.SAND.getID();
+						}
+					}else if(frequancy[x][y]<0.85F){
+						if(fs[x][y]<-0.2F){
+							//very cold
+							//grassland
+							newTileIDs[x][y] = Tile.GRASS.getID();
+						}else if(fs[x][y]<0F){
+							//cold
+							//grassland
+							newTileIDs[x][y] = Tile.GRASS.getID();
+						}else if(fs[x][y]<0.2){
+							//mild
+							//forest
+							newTileIDs[x][y] = Tile.GRASS.getID();
+						}else if(fs[x][y]<0.4){
+							//warm
+							//forest
+							newTileIDs[x][y] = Tile.GRASS.getID();
+						}else{
+							//hot
+							//forest
+							newTileIDs[x][y] = Tile.GRASS.getID();
+						}
+					}else if(frequancy[x][y]<1F){
+						if(fs[x][y]<-0.4){
+							//warm
+							//Tropical forest
+							newTileIDs[x][y] = Tile.SAVANA_GRASS.getID();
+						}else if(fs[x][y]<0.2){
+							//warm
+							//Tropical forest
+							newTileIDs[x][y] = Tile.SAVANA_GRASS.getID();
+						}else{
+							//hot
+							//Tropical forest
+							newTileIDs[x][y] = Tile.SAVANA_GRASS.getID();
+						}
+					}else if(frequancy[x][y]<1.2F){
+						if(fs[x][y]<-0.4){
+							//warm
+							//Tropical forest
+							newTileIDs[x][y] = Tile.JUNGLE_GRASS.getID();
+						}else if(fs[x][y]<0.2){
+							//warm
+							//Tropical forest
+							newTileIDs[x][y] = Tile.JUNGLE_GRASS.getID();
+						}else{
+							//hot
+							newTileIDs[x][y] = Tile.JUNGLE_GRASS.getID();
+						}
+					}else{
+						if(fs[x][y]<0){
+							//warm
+							//Tropical forest
+							newTileIDs[x][y] = Tile.SNOW.getID();
+						}else{
+							//hot
+							newTileIDs[x][y] = Tile.SNOW.getID();
+						}
+					}
+				}
+				/*
 				if(frequancy[x][y]<0.00F){
 					if(frequancy[x][y]<-0.35F){
 						newTileIDs[x][y] = Tile.DEEP_WATER.getID();
@@ -554,6 +590,7 @@ public class MapData {
 						newTileIDs[x][y] = Tile.GRASS.getID();
 					}
 				}
+				*/
 			}
 		}
 		return newTileIDs;
@@ -726,16 +763,6 @@ public class MapData {
 		}
 	}
 	public float getTileFrequancy(int x, int y ,int vue) {
-		switch(vue){
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		}
 		Chunk chunk = getChunk(x, y,true,vue);
 		if(chunk==null){
 			System.out.println("Generating void tiles when i should not be (Crash protection)");
@@ -758,16 +785,6 @@ public class MapData {
 		}
 	}
 	public int getTileID(int x, int y,int vue) {
-		switch(vue){
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		}
 		Chunk chunk = getChunk(x, y,true,vue);
 		if(chunk==null){
 			System.out.println("Generating void tiles when i should not be (Crash protection)");
@@ -799,7 +816,7 @@ public class MapData {
 	}
 	public void generateStructure(int x, int y,Structures s){
 		if(hasSpace(x,y,s)){
-			if(shouldSpawn(x, y, Tile.GRASS,s)){
+			if(shouldSpawn(x, y, new Tile[]{Tile.GRASS,Tile.JUNGLE_GRASS},s)){
 				for(int xa = 0; xa<s.getWidth();xa++){
 					for(int ya = 0; ya<s.getHeight();ya++){
 						if(x>=0&&y>=0){
@@ -833,8 +850,14 @@ public class MapData {
 		}
 		
 	}
-	private boolean shouldSpawn(int x, int y, Tile req,Structures s){
-		if(getTile(x+(s.getWidth()/2), (y+s.getHeight())-1, 1)==req){
+	private boolean shouldSpawn(int x, int y, Tile[] req,Structures s){
+		boolean ok = false;
+		for(Tile t:req){
+			if(getTile(x+(s.getWidth()/2), (y+s.getHeight())-1, 1)==t){
+				ok=true;
+			}
+		}
+		if(ok){
 			return true;
 		}
 		return false;

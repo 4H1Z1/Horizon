@@ -3,10 +3,12 @@ package com.horizon.game.map;
 import java.util.Random;
 
 public class NoiseGenerator {
-
+	static float max;
+	static float min;
+	
 	
 	@SuppressWarnings("unused")
-	public static float[][] generateOctavedSimplexNoise(int width, int height, int startX, int startY,int octaves, float roughness, float scale) {
+	public static float[][] generateOctavedSimplexNoise(int width, int height, int startX, int startY,int octaves, float roughness, float scale,int seed) {
 	      float[][] totalNoise = new float[width][height];
 	       float layerFrequency = scale;
 	       float layerWeight = 1;
@@ -14,9 +16,16 @@ public class NoiseGenerator {
 
 	       for (int octave = 0; octave < octaves; octave++) {
 	          //Calculate single layer/octave of simplex noise, then add it to total noise
-	          for(int x = 0; x < width; x++){
-	             for(int y = 0; y < height; y++){
-	                totalNoise[x][y] += (float) noise((x+startX) * layerFrequency,(y+startY) * layerFrequency) * layerWeight;
+	          for(int x = seed; x < (width+seed); x++){
+	             for(int y = seed; y < (height+seed); y++){
+	                totalNoise[x-seed][y-seed] += (float) noise((x+startX) * layerFrequency,(y+startY) * layerFrequency) * layerWeight;
+	                if(min>(float) noise((x+startX) * layerFrequency,(y+startY) * layerFrequency) * layerWeight){
+	                	min = (float) noise((x+startX) * layerFrequency,(y+startY) * layerFrequency) * layerWeight;
+	                }
+	                if(max<(float) noise((x+startX) * layerFrequency,(y+startY) * layerFrequency) * layerWeight){
+	                	max = (float) noise((x+startX) * layerFrequency,(y+startY) * layerFrequency) * layerWeight;
+	                }
+	                //System.out.println(min+" "+max);;
 	             }
 	          }
 	          

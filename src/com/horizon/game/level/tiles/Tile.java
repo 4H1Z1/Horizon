@@ -15,8 +15,11 @@ public abstract class Tile {
 	public static final Tile DEEP_WATER = new BasicTile(4, 3, 0, false, true, false, "Deep Water", 0xff3D40FF);
 	public static final Tile OAK_LOG = new BasicTile(5, 4, 0, true, false, false, "Oak Log", 0xffC4A637);
 	public static final Tile OAK_LEAVES = new BasicTile(6, 5, 0, true, false, false, "Oak Leaves", 0xff00C690);
-	public static final Tile SAND = new BasicTile(7, 6, 0, true, false, false, "Sand", 0xffF3F781);
-
+	public static final Tile SAND = new BasicTile(7, 8, 0, true, false, false, "Sand", 0xffF3F781);
+	public static final Tile SNOW = new BasicTile(8, 6, 0, true, false, false, "Snow", 0xffffffff);
+	public static final Tile JUNGLE_GRASS = new BasicTile(9, 7, 0, true, false, false, "Jungle grass", 0xff339966);
+	public static final Tile SAVANA_GRASS = new BasicTile(10, 2, 0, false, false, false, "Savana Grass", 0xff00CC00);
+	
 	protected byte id;
 	protected boolean isSolid;
 	// light source

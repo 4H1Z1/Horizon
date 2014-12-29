@@ -16,6 +16,16 @@ public abstract class Structures {
 																				0, 3, 3, 3, 0, 
 																				0, 0, 3, 0, 0, 
 																				0, 0, 2, 0, 0 }, 5, 5);
+	public static final Structures ree = new Plant(new byte[] { 6, 6, 6, 6, 6,
+																	6, 6, 6, 6, 6, 
+																	6, 6, 6, 6, 6, 
+																	6, 6, 0, 6, 6, 
+																	6, 6, 0, 6, 6 },
+																	new byte[] { 6, 6, 6, 6, 6,
+																				6, 6, 6, 6, 6, 
+																				6, 6, 6, 6, 6, 
+																				6, 6, 0, 6, 6, 
+																				6, 6, 0, 6, 6 }, 5, 5);
 	byte[] IDArray;
 	byte[] level;
 	int width;

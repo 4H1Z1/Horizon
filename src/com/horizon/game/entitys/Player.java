@@ -6,6 +6,7 @@ import com.horizon.game.CurrentScreen;
 import com.horizon.game.InputHandler;
 import com.horizon.game.horizon;
 import com.horizon.game.gfx.Screen;
+import com.horizon.game.inventory.Inventory;
 import com.horizon.game.level.Level;
 import com.horizon.game.level.tiles.Tile;
 
@@ -16,12 +17,14 @@ public class Player extends Mob {
 	private int moveTick = 0;
 	private int moveTickCap = 15;
 	private int movePos = 0;
-	private int runningModifier = 3;
+	private int runningModifier = 30;
+	public Inventory inventory;
 	public Player(Level lever, int x, int y, InputHandler input,int gender) {
 		super(lever, "Player", x, y, 1,gender);
 		this.gender = gender;
 		//male = 0 female = 1
 		this.input = input;
+		this.inventory = new Inventory(27);
 	}
 
 	@Override

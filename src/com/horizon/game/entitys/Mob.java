@@ -15,6 +15,7 @@ public abstract class Mob extends Entity{
 	protected int gender;
 	protected Tile currentTile;
 	protected Level level;
+	protected int health;
 	public Mob(Level level,String name, int x, int y,int speed, int gender) {
 		super(level);
 		this.speed = speed;
@@ -25,6 +26,7 @@ public abstract class Mob extends Entity{
 		this.isSwimming = false;
 		this.currentTile = Tile.GRASS;
 		this.level = level;
+		this.health = 1000;
 	}
 	public void move(int xa, int ya){
 		numSteps++;
@@ -57,5 +59,11 @@ public abstract class Mob extends Entity{
 	
 	public String getName(){
 		return name;
+	}
+	public int getHealth(){
+		return health;
+	}
+	public void doDamage(int damage){
+		health-=damage;
 	}
 }

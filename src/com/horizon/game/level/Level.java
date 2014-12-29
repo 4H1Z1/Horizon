@@ -5,17 +5,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.horizon.game.horizon;
 import com.horizon.game.entitys.Entity;
 import com.horizon.game.entitys.Player;
 import com.horizon.game.gfx.Screen;
 import com.horizon.game.level.tiles.Tile;
-import com.horizon.game.map.Chunk;
 import com.horizon.game.map.MapData;
 import com.horizon.game.map.MiniMap;
-import com.horizon.game.structures.Structures;
 
 public class Level {
 	
@@ -115,8 +112,8 @@ public class Level {
 				for(int t = 0; t<thickness;t++){
 					for(int b = 0; b<thickness;b++){
 						if(pixles.length>(x+t)+(y+b)*mapWidth){
-							//if(map.getChunk(xa+x,ya+y,true,1)!=null&&map.getChunk(xa+x,ya+y,false,1).isLoaded){
-							if(map.getChunk(xa+x,ya+y,false,4)!=null&&map.getChunk(xa+x,ya+y,false,4).isLoaded){
+							if(map.getChunk(xa+x,ya+y,true,1)!=null&&map.getChunk(xa+x,ya+y,false,1).isLoaded){
+							//if(map.getChunk(xa+x,ya+y,false,4)!=null&&map.getChunk(xa+x,ya+y,false,4).isLoaded){
 								pixles[(x+t)+(y+b)*mapWidth] = getTile(xa+x,ya+y,4).getBaseColour();
 							}else{
 								pixles[(x+t)+(y+b)*mapWidth] = 0x000000;
